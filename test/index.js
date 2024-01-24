@@ -1,6 +1,6 @@
 
 const { DynamoDBDocumentClient } = require("@aws-sdk/lib-dynamodb")
-const { UpdateCommand } = require("@aws-sdk/lib-dynamodb")
+const { UpdateCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb")
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb")
 
 
@@ -26,7 +26,7 @@ const translateConfig = { marshallOptions, unmarshallOptions };
 // Create the DynamoDB Document client.
 const docClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
 
-process.env.CYCLIC_DB = 'CyclicDB'
+process.env.CYCLIC_DB = process.env.CYCLIC_DB || 'CyclicDB';
 
 //get
 
@@ -73,7 +73,7 @@ Object.keys(item).forEach((k, i) => {
 
 })
 expression = `set ${expression.join(', ')}`
-console.log(expression)
+// console.log(expression)
 const update_params = {
     TableName: process.env.CYCLIC_DB,
     Key: {
@@ -97,4 +97,71 @@ const run = async () => {
         // console.log("Error", err.$response.body.req);
     }
 };
-run();
+// run();
+
+
+// (async () => {
+//     const CyclicDb = require('../src');
+//     const db = CyclicDb(process.env.CYCLIC_DB);
+
+//     let item = await db.collection("animals").item("tiger");
+//     console.log("Item", item);
+//     let fragment = await item.fragment("Kellogg's").set({'name': 'Tony'});
+//     console.log("New fragment", fragment);
+//     fragment = await db.collection('animals').item('tiger').fragment("Kellogg's").get();
+//     console.log("Get fragment", fragment);
+// })();
+
+(async () => {
+    const CyclicDb = require('../src');
+    const db = CyclicDb(process.env.CYCLIC_DB);
+
+    let item = db.collection("animals").item("leo");
+    console.log("Item", item);
+    
+    let itemget = await item.get();
+    console.log("Item Getter", itemget);
+    
+    let fragments = await db.collection("animals").index('data').find('fragment');
+    console.log("Fragments", fragments);
+
+    // let fragment = await db.collection("animals").item("tiger").fragment("Kellogg's").list();
+    // console.log("Fragment", fragment);
+})();
+
+// (async () => {
+//     const data = await docClient.send(new QueryCommand({
+//         TableName: process.env.CYCLIC_DB,
+//         KeyConditionExpression: 'pk = :pk',
+//         // KeyConditionExpression: 'pk = :pk and sk = :sk',
+//         ExpressionAttributeValues: {
+//             ':pk': 'animals#tiger',
+//             // ':sk': 'index#key2'
+//         }
+//     }));
+//     console.table(data.Items.map(item => {
+//         delete item.created;
+//         delete item.updated;
+//         return item;
+//     }));
+// })();
+
+// (async () => {
+//     const CyclicDb = require('../src');
+//     const db = CyclicDb(process.env.CYCLIC_DB);
+
+//     let item = await db.collection("animals").item("tiger").set({
+//         key1: 'value1',
+//         key2: 'value2'
+//     }, {
+//         $index: ['key2']
+//     });
+//     console.log("Item set with index", item);
+    
+//     item = await item.get();
+//     console.log("Item get", item);
+    
+//     let indexes = await item.indexes();
+//     console.log("Indexes from tiger", indexes);
+// })
+// ();

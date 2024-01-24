@@ -20,12 +20,12 @@ describe("CRUD Suite from example in README", () => {
       color: 'orange'
     })
 
-    console.log(leo)
+    // console.log(leo)
 
     // get an item at key "leo" from collection animals
     let item = await animals.get(key)
 
-    console.log(item)
+    // console.log(item)
 
     // expect(item.props).toContain(leo.props)
 
@@ -59,15 +59,15 @@ describe("CRUD Suite from example in README", () => {
       $index: ['data']
     })
 
-    console.log(leo_fragment)
+    // console.log(leo_fragment)
     let r = await animals.index('data').find('fragment')
-    console.log(r.results[0])
+    // console.log(r.results[0])
     expect(r.results.length).toEqual(1)
     expect(r.results[0].key).toEqual('frname');
 
     await leo_fragment.delete()
     r = await animals.index('data').find('fragment')
-    console.log(r)
+    // console.log(r)
     expect(r.results.length).toEqual(0)
     // console.log(leo_fragment)
 

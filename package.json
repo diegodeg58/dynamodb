@@ -54,5 +54,8 @@
         "branches": [
             "main"
         ]
+    },
+    "jest": {
+        "testTimeout": 7000
     }
 }
